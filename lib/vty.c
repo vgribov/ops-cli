@@ -1156,12 +1156,6 @@ vty_describe_fold (struct vty *vty, int cmd_width,
 
   cmd = token->cmd[0] == '.' ? token->cmd + 1 : token->cmd;
 
-  if (desc_width <= 0)
-    {
-      vty_out (vty, "  %-*s  %s%s", cmd_width, cmd, token->desc, VTY_NEWLINE);
-      return;
-    }
-
   buf = XCALLOC (MTYPE_TMP, strlen (token->desc) + 1);
 
   for (p = token->desc; strlen (p) > desc_width; p += pos + 1)
