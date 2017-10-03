@@ -161,7 +161,7 @@ vtysh_ovsdb_cli_print(vtysh_ovsdb_cbmsg *p_msg, const char *fmt, ...)
 {
   va_list args;
 
-  if ((NULL == p_msg) || (NULL == p_msg))
+  if ((NULL == p_msg) || (NULL == fmt))
   {
     return e_vtysh_error;
   }
