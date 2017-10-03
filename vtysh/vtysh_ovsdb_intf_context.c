@@ -335,7 +335,7 @@ vtysh_intf_context_clientcallback(void *p_private)
 
      if (strcmp(ifrow->type, OVSREC_INTERFACE_TYPE_VLANSUBINT) == 0)
      {
-         int64_t vlan_number;
+         int64_t vlan_number = 0;
          if (0 < ifrow->n_subintf_parent)
          {
              vlan_number = ifrow->key_subintf_parent[0];
