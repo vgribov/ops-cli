@@ -8363,7 +8363,7 @@ DEFUN (cli_ospf_admin_distance,
             break;
         }
         distance = (unsigned char)atoi (argv[0]);
-        if (distance < 1 && distance > 255)
+        if (distance < 1 || distance > 255)
         {
             VLOG_DBG ("Invalid  OSPF administrative distance");
             break;
