@@ -33,6 +33,7 @@
 #else
 #include <zebra.h>
 #endif
+#include <inttypes.h>
 #include <sys/un.h>
 #include <setjmp.h>
 #include <sys/wait.h>
@@ -4037,7 +4038,7 @@ DEFUN (vtysh_show_session_timeout_cli,
 {
     int64_t timeout_period = vtysh_ovsdb_session_timeout_get();
 
-    vty_out(vty, "session-timeout: %lu minute", timeout_period);
+    vty_out(vty, "session-timeout: %" PRIi64 " minute", timeout_period);
     if (timeout_period > 1)
         vty_out(vty, "s");
     if (timeout_period != DEFAULT_SESSION_TIMEOUT_PERIOD)

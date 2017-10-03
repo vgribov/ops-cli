@@ -23,6 +23,7 @@
  *
  * Purpose: This file contains implementation of all OSPF configuration
  */
+#include <inttypes.h>
 #include <stdio.h>
 #include <sys/un.h>
 #include <setjmp.h>
@@ -290,17 +291,17 @@ ospf_timeval_convert (struct timeval *t, char *buf, size_t size)
     }
 
   if (w > 99)
-    snprintf (buf, size, "%ldw%1ldd", w, d);
+    snprintf (buf, size, "%luw%1lud", w, d);
   else if (w)
-    snprintf (buf, size, "%ldw%1ldd%02ldh", w, d, h);
+    snprintf (buf, size, "%luw%1lud%02luh", w, d, h);
   else if (d)
-    snprintf (buf, size, "%1ldd%02ldh%02ldm", d, h, m);
+    snprintf (buf, size, "%1lud%02luh%02lum", d, h, m);
   else if (h)
-    snprintf (buf, size, "%ldh%02ldm%02lds", h, m, t->tv_sec);
+    snprintf (buf, size, "%luh%02lum%02lds", h, m, t->tv_sec);
   else if (m)
-    snprintf (buf, size, "%ldm%02lds", m, t->tv_sec);
+    snprintf (buf, size, "%lum%02lds", m, t->tv_sec);
   else if (ms)
-    snprintf (buf, size, "%ld.%03lds", t->tv_sec, ms);
+    snprintf (buf, size, "%ld.%03lus", t->tv_sec, ms);
   else
     snprintf (buf, size, "%ld usecs", t->tv_usec);
 
@@ -1532,7 +1533,7 @@ ospf_one_area_show(struct vty *vty,int64_t area_id,
     }
 
     /* SPF alg executed times */
-    vty_out(vty, "    SPF algorithm executed %ld times%s",
+    vty_out(vty, "    SPF algorithm executed %" PRIi64 " times%s",
             ospf_get_area_statistics(ospf_area_row,
                                      OSPF_KEY_AREA_STATS_SPF_EXEC),
             VTY_NEWLINE);
@@ -1556,18 +1557,18 @@ ospf_one_area_show(struct vty *vty,int64_t area_id,
                 + ospf_area_row->n_opaque_area_lsas     \
                 + ospf_area_row->n_opaque_link_lsas;
 
-    vty_out(vty, "    Number of LSA %ld %s", number_lsa, VTY_NEWLINE);
+    vty_out(vty, "    Number of LSA %" PRIi64 " %s", number_lsa, VTY_NEWLINE);
 
     /* Router LSA */
     int_val = smap_get_int(&ospf_area_row->status, OSPF_KEY_AREA_ROUTER_CHKSUM, 0);
     if (int_val)
     {
-        vty_out(vty, "    Number of router LSA %ld. Checksum Sum 0x%08lx %s",
-                ospf_area_row->n_router_lsas, int_val, VTY_NEWLINE);
+        vty_out(vty, "    Number of router LSA %zu. Checksum Sum 0x%08" PRIx64 " %s",
+                ospf_area_row->n_router_lsas, (uint64_t) int_val, VTY_NEWLINE);
     }
     else
     {
-        vty_out(vty, "    Number of router LSA %ld. Checksum Sum 0x00000000 %s",
+        vty_out(vty, "    Number of router LSA %zu. Checksum Sum 0x00000000 %s",
                 ospf_area_row->n_router_lsas, VTY_NEWLINE);
     }
 
@@ -1576,12 +1577,12 @@ ospf_one_area_show(struct vty *vty,int64_t area_id,
                            OSPF_KEY_AREA_NETWORK_CHKSUM, 0);
     if (int_val)
     {
-        vty_out(vty, "    Number of network LSA %ld. Checksum Sum 0x%08lx %s",
-                ospf_area_row->n_network_lsas, int_val, VTY_NEWLINE);
+        vty_out(vty, "    Number of network LSA %zu. Checksum Sum 0x%08" PRIx64 " %s",
+                ospf_area_row->n_network_lsas, (uint64_t) int_val, VTY_NEWLINE);
     }
     else
     {
-        vty_out(vty, "    Number of network LSA %ld. Checksum Sum 0x00000000 %s",
+        vty_out(vty, "    Number of network LSA %zu. Checksum Sum 0x00000000 %s",
                 ospf_area_row->n_network_lsas, VTY_NEWLINE);
     }
 
@@ -1591,12 +1592,12 @@ ospf_one_area_show(struct vty *vty,int64_t area_id,
     if (int_val)
     {
         vty_out(vty,
-                "    Number of ABR summary LSA %ld. Checksum Sum 0x%08lx %s",
-                ospf_area_row->n_abr_summary_lsas, int_val, VTY_NEWLINE);
+                "    Number of ABR summary LSA %zu. Checksum Sum 0x%08" PRIx64 " %s",
+                ospf_area_row->n_abr_summary_lsas, (uint64_t) int_val, VTY_NEWLINE);
     }
     else
     {
-        vty_out(vty, "    Number of ABR summary LSA %ld. "
+        vty_out(vty, "    Number of ABR summary LSA %zu. "
                 "Checksum Sum 0x00000000 %s",
                 ospf_area_row->n_abr_summary_lsas, VTY_NEWLINE);
     }
@@ -1607,13 +1608,13 @@ ospf_one_area_show(struct vty *vty,int64_t area_id,
     if (int_val)
     {
         vty_out(vty,
-                "    Number of ASBR summary LSA %ld. Checksum Sum 0x%08lx %s",
-                ospf_area_row->n_asbr_summary_lsas, int_val, VTY_NEWLINE);
+                "    Number of ASBR summary LSA %zu. Checksum Sum 0x%08" PRIx64 " %s",
+                ospf_area_row->n_asbr_summary_lsas, (uint64_t) int_val, VTY_NEWLINE);
     }
     else
     {
         vty_out(vty,
-                "    Number of ASBR summary LSA %ld. Checksum Sum 0x00000000 %s",
+                "    Number of ASBR summary LSA %zu. Checksum Sum 0x00000000 %s",
                 ospf_area_row->n_asbr_summary_lsas, VTY_NEWLINE);
     }
 
@@ -1621,12 +1622,12 @@ ospf_one_area_show(struct vty *vty,int64_t area_id,
     int_val = smap_get_int(&ospf_area_row->status, OSPF_KEY_AREA_NSSA_CHKSUM, 0);
     if (int_val)
     {
-        vty_out(vty, "    Number of NSSA LSA %ld. Checksum Sum 0x%08lx %s",
-                ospf_area_row->n_as_nssa_lsas, int_val, VTY_NEWLINE);
+        vty_out(vty, "    Number of NSSA LSA %zu. Checksum Sum 0x%08" PRIx64 " %s",
+                ospf_area_row->n_as_nssa_lsas, (uint64_t) int_val, VTY_NEWLINE);
     }
     else
     {
-        vty_out(vty, "    Number of NSSA LSA %ld. Checksum Sum 0x00000000 %s",
+        vty_out(vty, "    Number of NSSA LSA %zu. Checksum Sum 0x00000000 %s",
                 ospf_area_row->n_as_nssa_lsas, VTY_NEWLINE);
     }
 
@@ -1635,12 +1636,12 @@ ospf_one_area_show(struct vty *vty,int64_t area_id,
                            OSPF_KEY_AREA_OPAQUE_LINK_CHKSUM, 0);
     if (int_val)
     {
-        vty_out(vty, "    Number of opaque link LSA %ld. Checksum Sum 0x%08lx %s",
-                ospf_area_row->n_opaque_link_lsas, int_val, VTY_NEWLINE);
+        vty_out(vty, "    Number of opaque link LSA %zu. Checksum Sum 0x%08" PRIx64 " %s",
+                ospf_area_row->n_opaque_link_lsas, (uint64_t) int_val, VTY_NEWLINE);
     }
     else
     {
-        vty_out(vty, "    Number of opaque link %ld. Checksum Sum 0x00000000 %s",
+        vty_out(vty, "    Number of opaque link %zu. Checksum Sum 0x00000000 %s",
                 ospf_area_row->n_opaque_link_lsas, VTY_NEWLINE);
     }
 
@@ -1649,12 +1650,12 @@ ospf_one_area_show(struct vty *vty,int64_t area_id,
                            OSPF_KEY_AREA_OPAQUE_AREA_CHKSUM, 0);
     if (int_val)
     {
-        vty_out(vty, "    Number of opaque area LSA %ld. Checksum Sum 0x%08lx %s",
-                ospf_area_row->n_opaque_area_lsas, int_val, VTY_NEWLINE);
+        vty_out(vty, "    Number of opaque area LSA %zu. Checksum Sum 0x%08" PRIx64 " %s",
+                ospf_area_row->n_opaque_area_lsas, (uint64_t) int_val, VTY_NEWLINE);
     }
     else
     {
-        vty_out(vty, "    Number of opaque area %ld. Checksum Sum 0x00000000 %s",
+        vty_out(vty, "    Number of opaque area %zu. Checksum Sum 0x00000000 %s",
                 ospf_area_row->n_opaque_area_lsas, VTY_NEWLINE);
     }
 
@@ -1784,14 +1785,14 @@ ospf_ip_router_show()
        vty_out (vty, "  Stub router advertisement is configured%s",
                 VTY_NEWLINE);
 
-       vty_out(vty, "      Enabled for %lds after start-up%s", int_val,
+       vty_out(vty, "      Enabled for %" PRIi64 "s after start-up%s", int_val,
                VTY_NEWLINE);
      }
 
     if (ospf_router_row->n_spf_calculation > 0)
     {
         /* SPF scheduling delay */
-        vty_out(vty, "  Initial SPF scheduling delay %ld millisec(s)%s",
+        vty_out(vty, "  Initial SPF scheduling delay %" PRIi64 " millisec(s)%s",
                 ospf_get_SPF_calc_from_router(ospf_router_row,
                                               OSPF_KEY_SPF_DELAY),
                 VTY_NEWLINE);
@@ -1799,14 +1800,14 @@ ospf_ip_router_show()
 
         /* Minimum hold time */
         vty_out(vty, "  Minimum hold time between consecutive "
-                "SPFs %ld millisec(s)%s",
+                "SPFs %" PRIi64 " millisec(s)%s",
                 ospf_get_SPF_calc_from_router(ospf_router_row,
                                               OSPF_KEY_SPF_HOLD_TIME),
                 VTY_NEWLINE);
 
         /* Maximum hold time */
         vty_out(vty, "  Maximum hold time between consecutive "
-                "SPFs %ld millisec(s)%s",
+                "SPFs %" PRIi64 " millisec(s)%s",
                 ospf_get_SPF_calc_from_router(ospf_router_row,
                                               OSPF_KEY_SPF_MAX_WAIT),
                 VTY_NEWLINE);
@@ -1858,13 +1859,13 @@ ospf_ip_router_show()
                            OSPF_KEY_ROUTER_EXT_CHKSUM, 0);
     if (int_val)
     {
-        vty_out(vty, "  Number of external LSA %ld. "
-                     "Checksum Sum 0x%08lx%s",
-                     ospf_router_row->n_as_ext_lsas, int_val, VTY_NEWLINE);
+        vty_out(vty, "  Number of external LSA %zu. "
+                     "Checksum Sum 0x%08" PRIx64 "%s",
+		ospf_router_row->n_as_ext_lsas, (uint64_t) int_val, VTY_NEWLINE);
     }
     else
     {
-        vty_out(vty, "  Number of external LSA %ld. "
+        vty_out(vty, "  Number of external LSA %zu. "
                      "Checksum Sum 0x00000000%s",
                      ospf_router_row->n_as_ext_lsas, VTY_NEWLINE);
     }
@@ -1874,20 +1875,20 @@ ospf_ip_router_show()
                            OSPF_KEY_ROUTER_OPAQUE_CHKSUM, 0);
     if (int_val)
     {
-        vty_out(vty, "  Number of opaque AS LSA %ld. "
-                     "Checksum Sum 0x%08lx%s",
-                     ospf_router_row->n_opaque_as_lsas, int_val,
+        vty_out(vty, "  Number of opaque AS LSA %zu. "
+                     "Checksum Sum 0x%08" PRIx64 "%s",
+		ospf_router_row->n_opaque_as_lsas, (uint64_t) int_val,
                      VTY_NEWLINE);
     }
     else
     {
-        vty_out(vty, "  Number of opaque AS LSA %ld. "
+        vty_out(vty, "  Number of opaque AS LSA %zu. "
                      "Checksum Sum 0x00000000%s",
                      ospf_router_row->n_opaque_as_lsas, VTY_NEWLINE);
     }
 
     /* Number of areas */
-    vty_out(vty, "  Number of areas attached to this router: %ld%s",
+    vty_out(vty, "  Number of areas attached to this router: %zu%s",
                     ospf_router_row->n_areas, VTY_NEWLINE);
 
     /* Adjacency logging */
@@ -2389,21 +2390,21 @@ ospf_vl_interface_one_row_print(struct vty *vty,
 
     /* cost */
     if (port_row->n_ospf_if_out_cost > 0)
-        vty_out(vty, " Cost: %ld %s", port_row->ospf_if_out_cost[0], VTY_NEWLINE);
+        vty_out(vty, " Cost: %" PRIi64 " %s", port_row->ospf_if_out_cost[0], VTY_NEWLINE);
     else
         vty_out(vty, " Cost: %d %s", OSPF_DEFAULT_COST, VTY_NEWLINE);
 
     /* Transmit delay */
     intervals = smap_get_int(&(ospf_interface_row->ospf_vlink->other_config),
                     OSPF_KEY_TRANSMIT_DELAY,OSPF_TRANSMIT_DELAY_DEFAULT);
-    vty_out(vty, "  Transmit Delay is %ld sec,", intervals);
+    vty_out(vty, "  Transmit Delay is %" PRIi64 " sec,", intervals);
 
     /* State */
     vty_out(vty, " State <%s>,",ospf_ifsm_print(ospf_interface_row->ifsm_state));
 
     /* Priority */
     if(port_row->n_ospf_priority)
-        vty_out(vty, " Priority %ld %s", *port_row->ospf_priority, VTY_NEWLINE);
+        vty_out(vty, " Priority %" PRIi64 " %s", *port_row->ospf_priority, VTY_NEWLINE);
 
     /* Parse through the neighbor table and get information */
     is_dr_present = false;
@@ -2498,20 +2499,20 @@ ospf_vl_interface_one_row_print(struct vty *vty,
     /* Hello */
     intervals  = smap_get_int(&(ospf_interface_row->ospf_vlink->other_config),
                     OSPF_KEY_HELLO_INTERVAL,OSPF_HELLO_INTERVAL_DEFAULT);
-    vty_out(vty, "  Timer intervals configured, Hello %ld", intervals);
+    vty_out(vty, "  Timer intervals configured, Hello %" PRIi64, intervals);
 
     /* Dead */
     intervals = smap_get_int(&(ospf_interface_row->ospf_vlink->other_config),
                     OSPF_KEY_DEAD_INTERVAL, OSPF_DEAD_INTERVAL_DEFAULT);
-    vty_out(vty, " Dead %ld", intervals);
+    vty_out(vty, " Dead %" PRIi64, intervals);
 
     /* Wait */
-    vty_out(vty, " wait %ld", intervals);
+    vty_out(vty, " wait %" PRIi64, intervals);
 
     /* Retransmit */
     intervals = smap_get_int(&(ospf_interface_row->ospf_vlink->other_config),
                     OSPF_KEY_RETRANSMIT_INTERVAL, OSPF_RETRANSMIT_INTERVAL_DEFAULT);
-    vty_out(vty, " Retransmit %ld%s", intervals,VTY_NEWLINE);
+    vty_out(vty, " Retransmit %" PRIi64 "%s", intervals, VTY_NEWLINE);
 
     /* Hello due in */
     val =smap_get(&ospf_interface_row->status, OSPF_KEY_INTERFACE_ACTIVE);
@@ -2543,7 +2544,7 @@ ospf_vl_interface_one_row_print(struct vty *vty,
 
     /* Neighbor count and Adjacent neighbor count */
     if (ospf_interface_row->n_neighbors)
-        vty_out(vty, "  Neighbor Count is %ld, Adjacent neighbor count is %d%s",
+        vty_out(vty, "  Neighbor Count is %u, Adjacent neighbor count is %d%s",
             (ospf_interface_row->n_neighbors - 1), n_adjacent_nbrs, VTY_NEWLINE);
     else
         vty_out(vty, "  Neighbor Count is 0, Adjacent neighbor count is %d%s",
@@ -2863,11 +2864,11 @@ ospf_interface_one_row_print(struct vty *vty,const char* ifname,
     /* MTU, Admin and oper states */
     if(interface_row->n_mtu > 0)
     {
-        vty_out(vty, " MTU %ld bytes,", interface_row->mtu[0]);
+        vty_out(vty, " MTU %" PRIi64 " bytes,", interface_row->mtu[0]);
     }
     if(interface_row->n_link_speed > 0)
     {
-        vty_out(vty, " BW %ld Mbps", (interface_row->link_speed[0])/1000000);
+        vty_out(vty, " BW %" PRIi64 " Mbps", (interface_row->link_speed[0])/1000000);
     }
     if(interface_row->admin_state)
     {
@@ -2965,13 +2966,13 @@ ospf_interface_one_row_print(struct vty *vty,const char* ifname,
 
     /* cost */
     if (port_row->n_ospf_if_out_cost > 0)
-        vty_out(vty, " Cost: %ld %s", port_row->ospf_if_out_cost[0], VTY_NEWLINE);
+        vty_out(vty, " Cost: %" PRIi64 " %s", port_row->ospf_if_out_cost[0], VTY_NEWLINE);
     else
         vty_out(vty, " Cost: %d %s", 0, VTY_NEWLINE);
 
     /* Transmit delay */
     intervals = ospf_get_port_intervals(port_row, OSPF_KEY_TRANSMIT_DELAY);
-    vty_out(vty, "  Transmit Delay is %ld sec,",
+    vty_out(vty, "  Transmit Delay is %" PRIi64 " sec,",
             (intervals > 0) ? intervals : OSPF_TRANSMIT_DELAY_DEFAULT);
 
     /* State */
@@ -2979,7 +2980,7 @@ ospf_interface_one_row_print(struct vty *vty,const char* ifname,
 
     /* Priority */
     if(port_row->n_ospf_priority)
-        vty_out(vty, " Priority %ld %s", *port_row->ospf_priority, VTY_NEWLINE);
+        vty_out(vty, " Priority %" PRIi64 " %s", *port_row->ospf_priority, VTY_NEWLINE);
 
     /* Parse through the neighbor table and get information */
     is_dr_present = false;
@@ -3087,23 +3088,23 @@ ospf_interface_one_row_print(struct vty *vty,const char* ifname,
     /* Timer intervals */
     /* Hello */
     intervals = ospf_get_port_intervals(port_row, OSPF_KEY_HELLO_INTERVAL);
-    vty_out(vty, "  Timer intervals configured, Hello %ld",
+    vty_out(vty, "  Timer intervals configured, Hello %" PRIi64,
             (intervals > 0) ? intervals : OSPF_HELLO_INTERVAL_DEFAULT);
 
     /* Dead */
     intervals = ospf_get_port_intervals(port_row, OSPF_KEY_DEAD_INTERVAL);
-    vty_out(vty, " Dead %ld",
+    vty_out(vty, " Dead %" PRIi64,
             (intervals > 0) ? intervals : OSPF_ROUTER_DEAD_INTERVAL_DEFAULT);
 
     /* Wait */
     intervals = ospf_get_port_intervals(port_row, OSPF_KEY_DEAD_INTERVAL);
-    vty_out(vty, " wait %ld",
+    vty_out(vty, " wait %" PRIi64,
             (intervals > 0) ? intervals : OSPF_ROUTER_DEAD_INTERVAL_DEFAULT);
 
 
     /* Retransmit */
     intervals = ospf_get_port_intervals(port_row, OSPF_KEY_RETRANSMIT_INTERVAL);
-    vty_out(vty, " Retransmit %ld%s",
+    vty_out(vty, " Retransmit %" PRIi64 "%s",
             (intervals > 0) ? intervals : OSPF_RETRANSMIT_INTERVAL_DEFAULT,
             VTY_NEWLINE);
 
@@ -3137,7 +3138,7 @@ ospf_interface_one_row_print(struct vty *vty,const char* ifname,
 
     /* Neighbor count and Adjacent neighbor count */
     if (ospf_interface_row->n_neighbors)
-        vty_out(vty, "  Neighbor Count is %ld, Adjacent neighbor count is %d%s",
+        vty_out(vty, "  Neighbor Count is %u, Adjacent neighbor count is %d%s",
             (ospf_interface_row->n_neighbors - 1), n_adjacent_nbrs, VTY_NEWLINE);
     else
         vty_out(vty, "  Neighbor Count is 0, Adjacent neighbor count is %d%s",
@@ -3292,7 +3293,7 @@ ospf_neighbor_one_row_print(
     /* Priority and State. */
     if(ospf_nbr_row->n_nbr_priority)
     {
-        vty_out(vty, "%-15s %3ld %-15s ", show_str, *ospf_nbr_row->nbr_priority,
+        vty_out(vty, "%-15s %3" PRIi64 " %-15s ", show_str, *ospf_nbr_row->nbr_priority,
                 state_str);
     }
     else
@@ -3342,7 +3343,7 @@ ospf_neighbor_one_row_print(
         vty_out (vty, "%-20s ", "NULL");
     }
 
-    vty_out (vty, "%5ld %5ld %5ld%s",
+    vty_out (vty, "%5" PRIi64 " %5" PRIi64 " %5" PRIi64 "%s",
         ospf_get_statistics_from_neighbor(ospf_nbr_row,
         OSPF_KEY_NEIGHBOR_LS_RE_TRANSMIT_CNT),
         ospf_get_statistics_from_neighbor(ospf_nbr_row,
@@ -3494,8 +3495,8 @@ ospf_neighbor_one_row_detail_print(
 
     if(ospf_nbr_row->n_nbr_priority > 0)
     {
-        vty_out (vty, "    Neighbor priority is %ld, "   \
-                 "State is %s, %ld state changes%s",
+        vty_out (vty, "    Neighbor priority is %" PRIi64 ", "   \
+                 "State is %s, %" PRIi64 " state changes%s",
                  *ospf_nbr_row->nbr_priority,
                  ospf_nbr_state_print(ospf_nbr_row->nfsm_state),
                  ospf_get_statistics_from_neighbor(ospf_nbr_row,
@@ -3505,7 +3506,7 @@ ospf_neighbor_one_row_detail_print(
     else
     {
         vty_out (vty, "    Neighbor priority is 0, "   \
-                 "State is %s, %ld state changes%s",
+                 "State is %s, %" PRIi64 " state changes%s",
                  ospf_nbr_row->nfsm_state,
                  ospf_get_statistics_from_neighbor(ospf_nbr_row,
                  OSPF_KEY_NEIGHBOR_STATE_CHG_CNT),
@@ -3548,15 +3549,15 @@ ospf_neighbor_one_row_detail_print(
     vty_out (vty, "    Dead timer due in %s %s ",
              ospf_timer_adjust_post(val, timebuf, sizeof(timebuf)), VTY_NEWLINE);
 
-    vty_out (vty, "   Database Summary List %ld%s",
+    vty_out (vty, "   Database Summary List %" PRIi64 "%s",
                 ospf_get_statistics_from_neighbor(ospf_nbr_row,
                 OSPF_KEY_NEIGHBOR_DB_SUMMARY_CNT), VTY_NEWLINE);
 
-    vty_out (vty, "    Link State Request List %ld %s",
+    vty_out (vty, "    Link State Request List %" PRIi64 " %s",
             ospf_get_statistics_from_neighbor(ospf_nbr_row,
                             OSPF_KEY_NEIGHBOR_LS_REQUEST_CNT), VTY_NEWLINE);
 
-    vty_out (vty, "    Link State Retransmission List %ld %s",
+    vty_out (vty, "    Link State Retransmission List %" PRIi64 " %s",
             ospf_get_statistics_from_neighbor(ospf_nbr_row,
                         OSPF_KEY_NEIGHBOR_LS_RE_TRANSMIT_CNT),
              VTY_NEWLINE);
@@ -3857,7 +3858,7 @@ ospf_running_config_show()
                                          OVSREC_OSPF_ROUTER_DISTANCE_ALL);
             if (distance > 0 && (distance != OSPF_ROUTER_DISTANCE_DEFAULT))
             {
-                vty_out(vty, "%4s%s %ld%s", "", "distance", distance, VTY_NEWLINE);
+                vty_out(vty, "%4s%s %" PRIi64 "%s", "", "distance", distance, VTY_NEWLINE);
             }
 
             /*Compatible rfc1583*/
@@ -3954,7 +3955,7 @@ ospf_route_network_show(const struct ovsrec_ospf_router *router_row)
 
             cost = smap_get_int(&route_row->route_info,
                                 OSPF_KEY_ROUTE_COST, OSPF_DEFAULT_COST);
-            vty_out (vty, "N IA %-18s    [%lu] area: %s%s", route_row->prefix,
+            vty_out (vty, "N IA %-18s    [%" PRIi64 "] area: %s%s", route_row->prefix,
                      cost, area_str, VTY_NEWLINE);
             for(j = 0; j < route_row->n_paths; j++)
                 vty_out (vty, "%24s   %s%s", "", route_row->paths[j],
@@ -4001,7 +4002,7 @@ ospf_route_network_show(const struct ovsrec_ospf_router *router_row)
 
             cost = smap_get_int(&route_row->route_info,
                                 OSPF_KEY_ROUTE_COST, OSPF_DEFAULT_COST);
-            vty_out (vty, "N    %-18s    [%lu] area: %s%s", route_row->prefix,
+            vty_out (vty, "N    %-18s    [%" PRIi64 "] area: %s%s", route_row->prefix,
                      cost, area_str, VTY_NEWLINE);
             for(j = 0; j < route_row->n_paths; j++)
                 vty_out (vty, "%24s   %s%s", "", route_row->paths[j],
@@ -4080,7 +4081,7 @@ ospf_route_router_show(const struct ovsrec_ospf_router *router_row)
         abr = smap_get(&route_row->route_info, OSPF_KEY_ROUTE_TYPE_ABR);
         asbr = smap_get(&route_row->route_info, OSPF_KEY_ROUTE_TYPE_ASBR);
 
-        vty_out (vty, "R    %-15s    %s [%lu] area: %s%s%s%s",
+        vty_out (vty, "R    %-15s    %s [%" PRIi64 "] area: %s%s%s%s",
                  route_row->prefix,
                  !strcmp(route_row->path_type,
                  OSPF_PATH_TYPE_STRING_INTER_AREA) ? "IA" : "  ",
@@ -4156,7 +4157,7 @@ ospf_route_external_show(const struct ovsrec_ospf_router *router_row)
 
         if(!strcmp(val, OSPF_EXT_TYPE_STRING_TYPE1))
         {
-            vty_out (vty, "N E1 %-18s    [%lu] tag: %u%s",
+            vty_out (vty, "N E1 %-18s    [%" PRIi64 "] tag: %u%s",
                      route_row->prefix,
                      cost,
                      smap_get_int(&route_row->route_info,
@@ -4165,7 +4166,7 @@ ospf_route_external_show(const struct ovsrec_ospf_router *router_row)
         }
         else if(!strcmp(val, OSPF_EXT_TYPE_STRING_TYPE2))
         {
-            vty_out (vty, "N E2 %-18s    [%lu/%u] tag: %u%s",
+            vty_out (vty, "N E2 %-18s    [%" PRIi64 "/%u] tag: %u%s",
                      route_row->prefix, cost,
                      smap_get_int(&route_row->route_info,
                                   OSPF_KEY_ROUTE_TYPE2_COST,
@@ -6004,7 +6005,7 @@ ospf_lsa_detail_show(const struct ovsrec_ospf_lsa  *lsa_row)
    {
        int64_t time_age;
        OSPF_LSA_AGE(lsa_row->ls_birth_time, time_age);
-       vty_out(vty, "  LS age: %ld%s", time_age,  VTY_NEWLINE);
+       vty_out(vty, "  LS age: %" PRIi64 "%s", time_age,  VTY_NEWLINE);
    }
    else
        vty_out(vty, "  LS age: %s%s",OSPF_DEFAULT_NULL_STR,VTY_NEWLINE);
@@ -6070,7 +6071,7 @@ ospf_lsa_detail_show(const struct ovsrec_ospf_lsa  *lsa_row)
 
 
    if(lsa_row->n_length > 0)
-       vty_out (vty, "  Length: %ld%s", *lsa_row->length,VTY_NEWLINE);
+       vty_out (vty, "  Length: %" PRIi64 "%s", *lsa_row->length,VTY_NEWLINE);
    else
    {
        vty_out (vty, "  Length: %s%s", OSPF_DEFAULT_NULL_STR, VTY_NEWLINE);
@@ -7243,7 +7244,7 @@ ospf_lsa_show_one_row(const struct ovsrec_ospf_lsa *lsa_row, int type)
      {
         int64_t time_age ;
         OSPF_LSA_AGE(lsa_row->ls_birth_time, time_age);
-        vty_out(vty, "%-8ld ", time_age);
+        vty_out(vty, "%-8" PRIi64 " ", time_age);
      }
      else
          vty_out(vty, "%8s ", OSPF_DEFAULT_NULL_STR);
@@ -7261,7 +7262,7 @@ ospf_lsa_show_one_row(const struct ovsrec_ospf_lsa *lsa_row, int type)
      {
          case OSPF_LSA_LSA_TYPE_TYPE1_ROUTER_LSA:
              if (lsa_row->n_num_router_links)
-                 vty_out (vty, " %-ld", *lsa_row->num_router_links);
+                 vty_out (vty, " %-" PRIi64, *lsa_row->num_router_links);
              else
                  vty_out(vty, " %-d", OSPF_DEFAULT_LSA_ROUTER_LINKS);
              break;

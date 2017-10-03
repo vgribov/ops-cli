@@ -25,6 +25,7 @@
  *
  ***************************************************************************/
 
+#include <inttypes.h>
 #include <sys/un.h>
 #include <setjmp.h>
 #include <sys/wait.h>
@@ -637,7 +638,7 @@ cli_show_subinterface_row(const struct ovsrec_interface *ifrow, bool brief)
         }
         else
         {
-            vty_out(vty, " %-6ld", intVal/1000000);
+            vty_out(vty, " %-6" PRIi64, intVal/1000000);
         }
         vty_out(vty, "   -- ");  /* Port channel */
         vty_out (vty, "%s", VTY_NEWLINE);
@@ -655,7 +656,7 @@ cli_show_subinterface_row(const struct ovsrec_interface *ifrow, bool brief)
 
         if (0 != key_subintf_parent)
         {
-            vty_out (vty, " Encapsulation dot1Q %lu %s",
+            vty_out (vty, " Encapsulation dot1Q %" PRIi64 " %s",
                     key_subintf_parent, VTY_NEWLINE);
         }
         else
@@ -740,7 +741,7 @@ show_subinterface_status(const struct ovsrec_interface *ifrow, bool brief,
     {
         /* Display brief information. */
         vty_out (vty, " %-12s ", ifrow->name);
-        vty_out(vty, "%4lu    ", key_subintf_parent); /*VLAN */
+        vty_out(vty, "%4" PRIi64 "    ", key_subintf_parent); /*VLAN */
         vty_out(vty, "eth  "); /*type */
         vty_out(vty, "routed "); /* mode - routed or not */
 
