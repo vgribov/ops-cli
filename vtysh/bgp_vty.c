@@ -1312,7 +1312,7 @@ cli_router_bgp_cmd_execute(char *vrf_name, int64_t asn)
     }
     /* Get the context from previous command for sub-commands. */
     vty->node = BGP_NODE;
-    vty->index = (void*) asn;
+    vty->index_int = asn;
 
     /* End of transaction. */
     END_DB_TXN(bgp_router_txn);
@@ -1425,7 +1425,7 @@ cli_bgp_router_id_cmd_execute(char *vrf_name, char *router_ip_addr)
         /* Start of transaction. */
         START_DB_TXN(bgp_router_txn);
 
-        VLOG_DBG("vty_index for router_id: %ld\n",(int64_t)vty->index);
+        VLOG_DBG("vty_index for router_id: %" PRIi64 "\n", vty->index_int);
 
         vrf_row = get_ovsrec_vrf_with_name(vrf_name);
         if (vrf_row == NULL) {
@@ -1433,7 +1433,7 @@ cli_bgp_router_id_cmd_execute(char *vrf_name, char *router_ip_addr)
         }
         /* See if it already exists. */
         bgp_router_row =
-        get_ovsrec_bgp_router_with_asn(vrf_row, (int64_t)vty->index);
+        get_ovsrec_bgp_router_with_asn(vrf_row, vty->index_int);
 
         /* If does not exist, nothing to modify. */
         if (bgp_router_row == NULL) {
@@ -1472,7 +1472,7 @@ cli_no_bgp_router_id_cmd_execute(char *vrf_name)
         /* Start of transaction. */
         START_DB_TXN(bgp_router_txn);
 
-        VLOG_DBG("vty_index for router_id: %ld\n",(int64_t)vty->index);
+        VLOG_DBG("vty_index for router_id: %" PRIi64 "\n", vty->index_int);
 
         vrf_row = get_ovsrec_vrf_with_name(vrf_name);
         if (vrf_row == NULL) {
@@ -1480,7 +1480,7 @@ cli_no_bgp_router_id_cmd_execute(char *vrf_name)
         }
         /* See if it already exists. */
         bgp_router_row = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
 
         /* If does not exist, nothing to modify. */
         if (bgp_router_row == NULL) {
@@ -1513,7 +1513,7 @@ cli_no_bgp_router_id_val_cmd_execute(char *vrf_name, char *router_ip_addr)
         /* Start of transaction. */
         START_DB_TXN(bgp_router_txn);
 
-        VLOG_DBG("vty_index for router_id: %ld\n",(int64_t)vty->index);
+        VLOG_DBG("vty_index for router_id: %" PRIi64 "\n", vty->index_int);
 
         vrf_row = get_ovsrec_vrf_with_name(vrf_name);
         if (vrf_row == NULL) {
@@ -1521,7 +1521,7 @@ cli_no_bgp_router_id_val_cmd_execute(char *vrf_name, char *router_ip_addr)
         }
         /* See if it already exists. */
         bgp_router_row = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
 
         /* If does not exist, nothing to modify. */
         if (bgp_router_row == NULL) {
@@ -1676,7 +1676,7 @@ cli_bgp_maxpaths_cmd_execute(char *vrf_name, int64_t max_paths)
     /* Start of transaction. */
     START_DB_TXN(bgp_router_txn);
 
-    VLOG_DBG("vty_index for maxpaths : %ld\n", (int64_t)vty->index);
+    VLOG_DBG("vty_index for maxpaths : %" PRIi64 "\n", vty->index_int);
 
     vrf_row = get_ovsrec_vrf_with_name(vrf_name);
     if (vrf_row == NULL) {
@@ -1685,7 +1685,7 @@ cli_bgp_maxpaths_cmd_execute(char *vrf_name, int64_t max_paths)
 
     /* See if it already exists. */
     bgp_router_row = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                    (int64_t)vty->index);
+                                                    vty->index_int);
     /* If does not exist, nothing to modify. */
     if (bgp_router_row == NULL) {
         ERRONEOUS_DB_TXN(bgp_router_txn, "no bgp router found");
@@ -1776,7 +1776,7 @@ cli_bgp_timers_cmd_execute(char *vrf_name, int64_t keepalive, int64_t holdtime)
     /* Start of transaction. */
     START_DB_TXN(bgp_router_txn);
 
-    VLOG_DBG("vty_index for timers : %ld\n",(int64_t)vty->index);
+    VLOG_DBG("vty_index for timers : %" PRIi64 "\n", vty->index_int);
 
     vrf_row = get_ovsrec_vrf_with_name(vrf_name);
     if (vrf_row == NULL) {
@@ -1785,7 +1785,7 @@ cli_bgp_timers_cmd_execute(char *vrf_name, int64_t keepalive, int64_t holdtime)
 
     /* See if it already exists. */
     bgp_router_row = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                    (int64_t)vty->index);
+                                                    vty->index_int);
     /* If does not exist, nothing to modify. */
     if (bgp_router_row == NULL) {
         ERRONEOUS_DB_TXN(bgp_router_txn, "no bgp router found");
@@ -1832,7 +1832,7 @@ cli_no_bgp_timers_cmd_execute(char *vrf_name)
     /* Start of transaction. */
     START_DB_TXN(bgp_router_txn);
 
-    VLOG_DBG("vty_index for timers : %ld\n",(int64_t)(vty->index));
+    VLOG_DBG("vty_index for timers : %" PRIi64 "\n", vty->index_int);
 
     vrf_row = get_ovsrec_vrf_with_name(vrf_name);
     if (vrf_row == NULL) {
@@ -1841,7 +1841,7 @@ cli_no_bgp_timers_cmd_execute(char *vrf_name)
 
     /* See if it already exists. */
     bgp_router_row = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                    (int64_t)(vty->index));
+                                                    vty->index_int);
 
     /* If does not exist, nothing to modify. */
     if (bgp_router_row == NULL) {
@@ -2028,7 +2028,7 @@ cli_bgp_fast_external_failover_cmd_execute(char *vrf_name)
     }
     /* See if it already exists. */
     bgp_router_row =
-    get_ovsrec_bgp_router_with_asn(vrf_row, (int64_t)vty->index);
+    get_ovsrec_bgp_router_with_asn(vrf_row, vty->index_int);
 
     /* If does not exist, nothing to modify. */
     if (bgp_router_row == NULL) {
@@ -2072,7 +2072,7 @@ cli_no_bgp_fast_external_failover_cmd_execute(char *vrf_name)
     }
     /* See if it already exists. */
     bgp_router_row =
-    get_ovsrec_bgp_router_with_asn(vrf_row, (int64_t)vty->index);
+    get_ovsrec_bgp_router_with_asn(vrf_row, vty->index_int);
 
     /* If does not exist, nothing to modify. */
     if (bgp_router_row == NULL) {
@@ -2245,7 +2245,7 @@ cli_bgp_log_neighbor_changes_cmd_execute (char *vrf_name)
     }
     /* See if it already exists. */
     bgp_router_row =
-    get_ovsrec_bgp_router_with_asn(vrf_row, (int64_t)vty->index);
+    get_ovsrec_bgp_router_with_asn(vrf_row, vty->index_int);
 
     /* If does not exist, nothing to modify. */
     if (bgp_router_row == NULL) {
@@ -2286,7 +2286,7 @@ cli_no_bgp_log_neighbor_changes_cmd_execute (char *vrf_name)
     }
     /* See if it already exists. */
     bgp_router_row =
-    get_ovsrec_bgp_router_with_asn(vrf_row, (int64_t)vty->index);
+    get_ovsrec_bgp_router_with_asn(vrf_row, vty->index_int);
 
     /* If does not exist, nothing to modify. */
     if (bgp_router_row == NULL) {
@@ -2449,11 +2449,11 @@ cli_bgp_network_cmd_execute(char *vrf_name, char *network)
 
     /* See if it already exists. */
     bgp_router_row = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                    (int64_t)vty->index);
+                                                    vty->index_int);
     if (bgp_router_row == NULL) {
         ERRONEOUS_DB_TXN(bgp_router_txn, "no bgp router found");
     } else {
-        VLOG_DBG("vty_index for network : %ld\n",(int64_t)vty->index);
+        VLOG_DBG("vty_index for network : %" PRIi64 "\n", vty->index_int);
         /* Insert networks in BGP_Router table. */
         network_list = xmalloc((NETWORK_MAX_LEN*sizeof(char)) *
                                (bgp_router_row->n_networks + 1));
@@ -2534,12 +2534,12 @@ cli_no_bgp_network_cmd_execute(char *vrf_name, const char *network)
 
     /* See if it already exists. */
     bgp_router_row = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                    (int64_t)vty->index);
+                                                    vty->index_int);
     if (bgp_router_row == NULL) {
         ERRONEOUS_DB_TXN(bgp_router_txn, "no bgp router found");
     } else if(verify_network_in_bgp_router_table(bgp_router_row, prefix_str)) {
-        VLOG_DBG("vty_index for no network : %ld\n network : %s",
-                  (int64_t)vty->index, network);
+        VLOG_DBG("vty_index for no network : %" PRIi64 "\n network : %s",
+                  vty->index_int, network);
         /* Delete networks in BGP_Router table. */
         network_list = xmalloc((NETWORK_MAX_LEN*sizeof(char)) *
                                (bgp_router_row->n_networks - 1));
@@ -2707,7 +2707,7 @@ cli_neighbor_remote_as_cmd_execute(char *vrf_name, struct vty *vty,
         ERRONEOUS_DB_TXN(txn, "no vrf found");
     }
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "Bgp router context not available");
     }
@@ -2819,7 +2819,7 @@ cli_neighbor_fallover_bfd_cmd_execute(char *vrf_name, struct vty *vty,
     if (vrf_row == NULL) {
        ERRONEOUS_DB_TXN(txn, "no vrf found");
     }
-    bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row, (int64_t)vty->index);
+    bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row, vty->index_int);
     if (!bgp_router_context) {
        ERRONEOUS_DB_TXN(txn, "Bgp Router not configured");
     }
@@ -2857,7 +2857,7 @@ cli_neighbor_no_fallover_bfd_cmd_execute(char *vrf_name, struct vty *vty,
         ERRONEOUS_DB_TXN(txn, "no vrf found");
     }
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "Bgp Router not configured");
     }
@@ -3025,7 +3025,7 @@ cli_no_neighbor_cmd_execute(char *vrf_name, const char *peer_str)
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -3087,7 +3087,7 @@ cli_no_neighbor_peer_group_cmd_execute(char *vrf_name, const char *name)
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if(!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -3118,7 +3118,7 @@ cli_neighbor_peer_group_cmd_execute(char *vrf_name, const char *groupName)
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -3277,7 +3277,7 @@ cli_neighbor_password_execute(char *vrf_name, int argc, const char *argv[])
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                       (int64_t)vty->index);
+							vty->index_int);
 
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
@@ -3331,7 +3331,7 @@ DEFUN(no_neighbor_password,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
 
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
@@ -3394,7 +3394,7 @@ cli_neighbor_set_peer_group_cmd_execute(char *vrf_name, const char *ip_addr,
 
     /* This *MUST* be already available. */
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -3483,7 +3483,7 @@ cli_no_neighbor_set_peer_group_cmd_execute(char *vrf_name,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -3579,7 +3579,7 @@ DEFUN(neighbor_shutdown,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -3620,7 +3620,7 @@ DEFUN(no_neighbor_shutdown,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -3795,7 +3795,7 @@ cli_neighbor_remove_private_as_cmd_execute(struct vty *vty,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router not configured");
     }
@@ -3847,7 +3847,7 @@ cli_no_neighbor_remove_private_as_cmd_execute(struct vty *vty,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router not configured");
     }
@@ -3950,7 +3950,7 @@ cli_neighbor_soft_reconfiguration_inbound_cmd_execute(char *vrf_name,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (bgp_router_context) {
         ovs_bgp_neighbor =
         get_bgp_neighbor_with_bgp_router_and_ipaddr(bgp_router_context,ip_addr);
@@ -4003,7 +4003,7 @@ cli_no_neighbor_soft_reconfiguration_inbound_cmd_execute(char *vrf_name,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (bgp_router_context) {
         ovs_bgp_neighbor =
         get_bgp_neighbor_with_bgp_router_and_ipaddr(bgp_router_context,ip_addr);
@@ -4416,7 +4416,7 @@ cli_neighbor_ebgp_multihop_execute(char* vrf_name,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-            (int64_t) vty->index);
+							vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -4485,7 +4485,7 @@ DEFUN(no_neighbor_ebgp_multihop,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-            (int64_t) vty->index);
+							vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -4575,7 +4575,7 @@ cli_neighbor_description_execute(int argc, const char *argv[])
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
 
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
@@ -4632,7 +4632,7 @@ DEFUN(no_neighbor_description,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
 
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
@@ -4758,7 +4758,7 @@ cli_bgp_neighbor_weight_execute (char *vrf_name,
     }
 
     bgp_router_row = get_ovsrec_bgp_router_with_asn (vrf_row,
-                        (int64_t)vty->index);
+						     vty->index_int);
     if (!bgp_router_row) {
         ERRONEOUS_DB_TXN (txn, "No BGP router found");
     }
@@ -4895,7 +4895,7 @@ cli_neighbor_timers_execute(char *vrf_name, int argc, const char *argv[])
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
 
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
@@ -4956,7 +4956,7 @@ DEFUN(no_neighbor_timers,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
 
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
@@ -5033,7 +5033,7 @@ cli_neighbor_advertisement_interval_cmd_execute(int argc, const char *argv[])
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
 
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
@@ -5086,7 +5086,7 @@ DEFUN(no_neighbor_advertise_interval,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
 
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
@@ -5208,7 +5208,7 @@ cli_neighbor_prefix_list_cmd_execute(char *vrf_name, char *ip_addr, char *name, 
         ERRONEOUS_DB_TXN(txn, "VRF not found");
     }
 
-    bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row, (int64_t)vty->index);
+    bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row, vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "Specified BGP router not configured");
     }
@@ -5301,7 +5301,7 @@ cli_no_neighbor_prefix_list_cmd_execute(char *vrf_name, char *ip_addr,
         ERRONEOUS_DB_TXN(txn, "VRF not found");
     }
 
-    bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row, (int64_t)vty->index);
+    bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row, vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "Specified BGP router not configured");
     }
@@ -5410,7 +5410,7 @@ get_bgp_neighbor(const struct ovsdb_idl_txn *txn_a, char *vrf_name, char *ip_add
         return NULL;
     }
 
-    bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row, (int64_t)vty->index);
+    bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row, vty->index_int);
     if (!bgp_router_context) {
         cli_do_config_abort(txn);
         vty_out(vty, "%s%s", "Specified BGP router not configured", VTY_NEWLINE);
@@ -5844,7 +5844,7 @@ cli_neighbor_route_map_cmd_execute(char *vrf_name, char *ipAddr, char *name,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -5935,7 +5935,7 @@ cli_no_neighbor_route_map_cmd_execute(char *vrf_name, char *ipAddr,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -6211,7 +6211,7 @@ cli_allow_as_in_execute(char *vrf_name, int argc, const char *argv[])
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -6274,7 +6274,7 @@ DEFUN(no_neighbor_allowas_in,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-                                                        (int64_t)vty->index);
+                                                        vty->index_int);
 
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
@@ -6306,7 +6306,7 @@ cli_neighbor_ttl_security_hops_execute(char* vrf_name,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-            (int64_t) vty->index);
+							vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -6376,7 +6376,7 @@ DEFUN(no_neighbor_ttl_security,
     }
 
     bgp_router_context = get_ovsrec_bgp_router_with_asn(vrf_row,
-            (int64_t) vty->index);
+							vty->index_int);
     if (!bgp_router_context) {
         ERRONEOUS_DB_TXN(txn, "bgp router context not available");
     }
@@ -10262,7 +10262,7 @@ cli_bgp_redistribute_cmd_execute(const char *vrf_name, const char *type,
     }
     /* See if it already exists. */
     bgp_router_row = get_ovsrec_bgp_router_with_asn((struct ovsrec_vrf *)vrf_row,
-                                                    (int64_t)vty->index);
+                                                    vty->index_int);
     /* If does not exist, nothing to modify. */
     if (bgp_router_row == NULL) {
         ERRONEOUS_DB_TXN(bgp_router_txn, "no bgp router found");

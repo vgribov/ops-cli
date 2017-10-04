@@ -69,7 +69,10 @@ struct vty
   int hindex;
 
   /* For current referencing point of interface, route-map, etc... */
-  void *index;
+  union {
+    void *index;
+    int64_t index_int;
+  };
 
   /* For storing list of interface, vlan etc... */
   struct range_list *index_list;

@@ -955,7 +955,7 @@ ospf_router_id_cmd_execute(char *vrf_name, char *router_ip_addr)
 
         /* See if it already exists. */
         ospf_router_row =
-        ospf_router_lookup_by_instance_id(vrf_row, (int64_t)vty->index);
+        ospf_router_lookup_by_instance_id(vrf_row, vty->index_int);
 
         /* If does not exist, nothing to modify. */
         if (ospf_router_row == NULL)
@@ -1005,7 +1005,7 @@ ospf_no_router_id_cmd_execute(char *vrf_name)
     }
     /* See if it already exists. */
     ospf_router_row = ospf_router_lookup_by_instance_id(vrf_row,
-                                                    (int64_t)vty->index);
+							vty->index_int);
 
     /* If does not exist, nothing to modify. */
     if (ospf_router_row == NULL) {
@@ -4243,7 +4243,7 @@ DEFUN(cli_ospf_router,
     {
         /* Get the context from previous command for sub-commands. */
         vty->node = OSPF_NODE;
-        vty->index = (void*) instance_tag;
+        vty->index_int = instance_tag;
     }
 
     return CMD_SUCCESS;
